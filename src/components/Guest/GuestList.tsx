@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CustomModal from '../CustomModal';
 import GuestForm from './GuestForm';
+import useSearch from '../../hooks/useSearch';
 
 interface Guest {
   id: number;
@@ -14,6 +15,8 @@ const GuestList: React.FC = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { searchTerm, setSearchTerm, filteredItems: filteredGuests } = useSearch(guests, 'firstName');
 
   useEffect(() => {
     async function fetchGuests() {
@@ -44,13 +47,19 @@ const GuestList: React.FC = () => {
           type="text"
           placeholder="Search Guests"
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {guests.map((guest) => (
+        {filteredGuests.map((guest) => (
           <div key={guest.id} className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-script text-weddingGold mb-2">{guest.firstName} {guest.lastName}</h2>
-            <p className="text-gray-700 mb-1"><strong>Email:</strong> {guest.email}</p>
+            <h2 className="text-2xl font-script text-weddingGold mb-2">
+              {guest.firstName} {guest.lastName}
+            </h2>
+            <p className="text-gray-700 mb-1">
+              <strong>Email:</strong> {guest.email}
+            </p>
             <button
               onClick={() => openModal(guest)}
               className="mt-4 bg-weddingPink text-white rounded p-2 hover:bg-pink-600 transition duration-200"

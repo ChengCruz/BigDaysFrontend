@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CustomModal from '../CustomModal';
 import MenuForm from './MenuForm';
+import useSearch from '../../hooks/useSearch';
 
 interface Menu {
   id: number;
@@ -13,6 +14,8 @@ const MenuList: React.FC = () => {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { searchTerm, setSearchTerm, filteredItems: filteredMenus } = useSearch(menus, 'name');
 
   useEffect(() => {
     async function fetchMenus() {
@@ -43,10 +46,12 @@ const MenuList: React.FC = () => {
           type="text"
           placeholder="Search Menus"
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {menus.map((menu) => (
+        {filteredMenus.map((menu) => (
           <div key={menu.id} className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-script text-weddingGold mb-2">{menu.name}</h2>
             <p className="text-gray-700 mb-1"><strong>Description:</strong> {menu.description}</p>

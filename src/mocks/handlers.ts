@@ -10,40 +10,41 @@
 // src/mocks/handlers.js
 import { http, HttpResponse } from "msw";
 import { bigDays } from "./data/bigDays";
+import { guests } from "./data/guests";
+import { tables } from "./data/tables";
+import { rsvps } from "./data/rsvps";
+import { menus } from "./data/menus";
 
 export const handlers = [
-    http.get('/api/users', ()=> {
-        // resolver.request
-        return HttpResponse.json([
-            {id:1, name: 'cruz'}
-        ])
-    }),
-  // Intercept "GET https://example.com/user" requests...
-//   http.get("https://example.com/user", () => {
-//     // ...and respond to them using this JSON response.
-//     console.log("trigg");
-//     return HttpResponse.json({
-//       id: "c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b3d",
-//       firstName: "John",
-//       lastName: "Maverick",
-//     });
-//   }),
-//   http.get("/resource", () => HttpResponse.json({ id: "abc-123" })),
-//   http.get("/api/bigdays", () => {
-//     return HttpResponse.json(bigDays);
-// //   }),
-// http.get('/posts', () => {
-//     // Response resolver allows you to react to captured requests,
-//     // respond with mock responses or passthrough requests entirely.
-//     // For now, let's just print a message to the console.
-//     console.log('Captured a "GET /posts" request')
-//   }),
-http.get('/api/bigdays', () => {
+  http.get("/api/users", () => {
+    // resolver.request
+    return HttpResponse.json([{ id: 1, name: "cruz" }]);
+  }),
+
+  http.get("/api/bigdays", () => {
     // Construct a JSON response with the list of all posts
     // as the response body.
     // return HttpResponse.json(Array.from(bigDays.values()))
-    console.log('in bigdays')
-    return HttpResponse.json(bigDays, { status: 200 })
+    console.log("in bigdays");
+    return HttpResponse.json(bigDays, { status: 200 });
+  }),
 
+  // Guests Handlers
+  http.get("/api/guests", () => {
+    return HttpResponse.json(guests, { status: 200 });
+  }),
+
+  // Tables Handlers
+  http.get("/api/tables", () => {
+    return HttpResponse.json(tables, { status: 200 });
+  }),
+
+  // RSVPs Handlers
+  http.get("/api/rsvps", () => {
+    return HttpResponse.json(rsvps, { status: 200 });
+  }),
+  // Menus Handlers
+  http.get("/api/menus", () => {
+    return HttpResponse.json(menus, { status: 200 });
   }),
 ];

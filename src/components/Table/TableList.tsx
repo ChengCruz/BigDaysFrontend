@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CustomModal from '../CustomModal';
 import TableForm from './TableForm';
+import useSearch from '../../hooks/useSearch';
 
 interface Table {
   id: number;
@@ -13,6 +14,8 @@ const TableList: React.FC = () => {
   const [tables, setTables] = useState<Table[]>([]);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { searchTerm, setSearchTerm, filteredItems: filteredTables } = useSearch(tables, 'number');
 
   useEffect(() => {
     async function fetchTables() {
@@ -43,10 +46,12 @@ const TableList: React.FC = () => {
           type="text"
           placeholder="Search Tables"
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tables.map((table) => (
+        {filteredTables.map((table) => (
           <div key={table.id} className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-script text-weddingGold mb-2">Table {table.number}</h2>
             <p className="text-gray-700 mb-1"><strong>Capacity:</strong> {table.capacity}</p>
