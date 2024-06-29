@@ -4,39 +4,21 @@ import CustomModal from '../CustomModal';
 import TableForm from './TableForm';
 import useSearch from '../../hooks/useSearch';
 import { toast } from 'react-toastify';
+import { Table } from '../types/Table';
 
-interface Table {
-  id: number;
-  number: string;
-  capacity: number;
+interface TableListProps {
+  tables: Table[];
+  loading: boolean;
+  error: string | null;
+  fetchTables: () => void;
 }
 
-const TableList: React.FC = () => {
-  const [tables, setTables] = useState<Table[]>([]);
+const TableList: React.FC<TableListProps> = ({ tables, loading, error, fetchTables }) => {
   const [filteredTables, setFilteredTables] = useState<Table[]>([]);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { searchTerm, setSearchTerm } = useSearch(tables, 'number');
-
-  useEffect(() => {
-    async function fetchTables() {
-      setIsLoading(true);
-      try {
-        const response = await axios.get<Table[]>('/api/tables');
-        setTables(response.data);
-        setFilteredTables(response.data);
-        setError(null);
-      } catch (err) {
-        setError('Error fetching tables');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchTables();
-  }, []);
 
   useEffect(() => {
     setFilteredTables(
@@ -56,10 +38,10 @@ const TableList: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await axios.delete(`/api/tables/${id}`);
-      setTables(tables.filter(t => t.id !== id));
+      fetchTables(); // Refresh the list after deletion
       toast.success('Table deleted successfully');
     } catch (error) {
       console.error('Error deleting table:', error);
@@ -67,8 +49,8 @@ const TableList: React.FC = () => {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <div>
@@ -94,7 +76,7 @@ const TableList: React.FC = () => {
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(table.id)}
+                onClick={() => handleDelete(table.id!)}
                 className="bg-red-600 text-white rounded p-2 hover:bg-red-800 transition duration-200"
               >
                 Delete
@@ -105,7 +87,7 @@ const TableList: React.FC = () => {
       </div>
       {selectedTable && (
         <CustomModal isOpen={isModalOpen} onClose={closeModal} title="Edit Table">
-          <TableForm initialData={selectedTable} onSave={closeModal} />
+          <TableForm initialData={selectedTable} onSave={() => { fetchTables(); closeModal(); }} />
         </CustomModal>
       )}
     </div>

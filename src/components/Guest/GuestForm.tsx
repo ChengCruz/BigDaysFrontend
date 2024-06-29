@@ -3,13 +3,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface Guest {
-  id?: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
+import { Guest } from '../types/Guest';
 
 const GuestForm: React.FC<{ initialData?: Guest; onSave?: () => void }> = ({ initialData, onSave }) => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Guest>({

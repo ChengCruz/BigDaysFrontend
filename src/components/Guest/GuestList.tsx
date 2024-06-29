@@ -4,40 +4,21 @@ import CustomModal from '../CustomModal';
 import GuestForm from './GuestForm';
 import useSearch from '../../hooks/useSearch';
 import { toast } from 'react-toastify';
+import { Guest } from '../types/Guest';
 
-interface Guest {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
+interface GuestListProps {
+  guests: Guest[];
+  loading: boolean;
+  error: string | null;
+  fetchGuests: () => void;
 }
 
-const GuestList: React.FC = () => {
-  const [guests, setGuests] = useState<Guest[]>([]);
+const GuestList: React.FC<GuestListProps> = ({ guests, loading, error, fetchGuests }) => {
   const [filteredGuests, setFilteredGuests] = useState<Guest[]>([]);
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { searchTerm, setSearchTerm } = useSearch(guests, 'firstName');
-
-  useEffect(() => {
-    async function fetchGuests() {
-      setIsLoading(true);
-      try {
-        const response = await axios.get<Guest[]>('/api/guests');
-        setGuests(response.data);
-        setFilteredGuests(response.data);
-        setError(null);
-      } catch (err) {
-        setError('Error fetching guests');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchGuests();
-  }, []);
 
   useEffect(() => {
     setFilteredGuests(
@@ -62,7 +43,7 @@ const GuestList: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`/api/guests/${id}`);
-      setGuests(guests.filter(g => g.id !== id));
+      fetchGuests(); // Refresh the list after deletion
       toast.success('Guest deleted successfully');
     } catch (error) {
       console.error('Error deleting guest:', error);
@@ -70,8 +51,8 @@ const GuestList: React.FC = () => {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <div>
@@ -112,7 +93,7 @@ const GuestList: React.FC = () => {
       </div>
       {selectedGuest && (
         <CustomModal isOpen={isModalOpen} onClose={closeModal} title="Edit Guest">
-          <GuestForm initialData={selectedGuest} onSave={closeModal} />
+          <GuestForm initialData={selectedGuest} onSave={() => { fetchGuests(); closeModal(); }} />
         </CustomModal>
       )}
     </div>

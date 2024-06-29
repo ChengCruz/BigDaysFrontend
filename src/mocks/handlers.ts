@@ -85,6 +85,34 @@ export const handlers = [
   http.get("/api/tables", () => {
     return HttpResponse.json(tables, { status: 200 });
   }),
+  http.post("/api/tables", async ({ request }) => {
+    const data: any = await request.json();
+    const newTable = {
+      ...data,
+      id: tables.length + 1,
+    };
+    tables.push(newTable);
+    return HttpResponse.json(newTable, { status: 201 });
+  }),
+  http.put("/api/tables/:id", async ({ request, params }) => {
+    const data: any = await request.json();
+    const { id } = params;
+    const index = tables.findIndex((b) => b.id === id);
+    if (index !== -1) {
+      tables[index] = { ...data, id: id };
+      return HttpResponse.json(tables[index], { status: 200 });
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+  http.delete('/api/tables/:id', async({ params }) => {
+    const { id } = params;
+    const index = tables.findIndex(b => b.id === (id));
+    if (index !== -1) {
+      tables.splice(index, 1);
+      return new HttpResponse(null, { status: 204 });
+    }
+    return new HttpResponse('Guest not found', { status: 404 });
+  }),
 
   // RSVPs Handlers
   http.get("/api/rsvps", () => {
