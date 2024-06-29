@@ -56,5 +56,6 @@
     "workerDirectory": [
       "public"
     ]
-  }
+  },
+    "proxy": "https://v5yyi5bfh9.execute-api.ap-southeast-1.amazonaws.com"
 }

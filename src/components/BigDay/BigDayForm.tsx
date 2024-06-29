@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BIGDAY_URL_ADD, BIGDAY_URL_UPDATE } from "../../utils/AWSURI";
 
 interface BigDay {
-  id?: number;
+  id?: string;
   name: string;
   date: string;
   venue: string;
 }
+interface apiResponse {
+  event_name: string;
+  date: Date;
+  venue: string;
+}
 
-const BigDayForm: React.FC<{ initialData?: BigDay }> = ({ initialData }) => {
+const BigDayForm: React.FC<{
+  initialData?: BigDay;
+  onFormSubmit?: () => void;
+}> = ({ initialData, onFormSubmit }) => {
   const [form, setForm] = useState<BigDay>(
     initialData || { name: "", date: "", venue: "" }
   );
@@ -28,14 +37,23 @@ const BigDayForm: React.FC<{ initialData?: BigDay }> = ({ initialData }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const newData: apiResponse = {
+        event_name: form.name,
+        date: new Date(form.date),
+        venue: form.venue,
+      };
       if (initialData?.id) {
-        await axios.put(`/api/bigdays/${initialData.id}`, form);
+        await axios.put(`${BIGDAY_URL_UPDATE}/${initialData.id}`, newData);
+        // await axios.put(`/api/bigdays/${initialData.id}`, newData);
         toast.success("Big Day updated successfully");
       } else {
-        await axios.post("/api/bigdays", form);
+        await axios.post(BIGDAY_URL_ADD, newData);
+        // await axios.post("/api/bigdays", newData);
         toast.success("Big Day added successfully");
       }
       setForm({ name: "", date: "", venue: "" });
+      console.log('typeof onFormSubmit ',typeof onFormSubmit)
+      if (typeof onFormSubmit === "function") onFormSubmit(); // Call the callback to refresh the list
     } catch (error) {
       console.error("Error saving big day:", error);
       toast.error("Failed to save Big Day");
