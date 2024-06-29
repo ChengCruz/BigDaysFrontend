@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomModal from "../CustomModal";
 import BigDayForm from "./BigDayForm";
 import { toast } from "react-toastify";
 import axios from "axios";
+import useSearch from "../../hooks/useSearch";
 
 interface BigDay {
   id: string;
@@ -24,8 +25,18 @@ interface BigDayListProps {
 const BigDayList: React.FC<BigDayListProps> = ({ bigDays, fetchBigDays }) => {
   // const [bigDays, setBigDays] = useState<BigDay[]>([]);
   const [selectedBigDay, setSelectedBigDay] = useState<BigDay | null>(null);
+  const [filteredBigDay, setFilteredBigDay] = useState<BigDay[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { searchTerm, setSearchTerm } = useSearch(bigDays, 'name');
+  useEffect(() => {
+    setFilteredBigDay(
+      bigDays.filter((bigday) =>
+        `${bigday.name}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, bigDays]);
   // const fetchBigDays = async () => {
   //   try {
   //     // const response = await axios.get<BigDay[]>(BIGDAY_URL_GET);
@@ -85,14 +96,16 @@ const BigDayList: React.FC<BigDayListProps> = ({ bigDays, fetchBigDays }) => {
   return (
     <div>
       <div className="mb-4">
-        <input
+              <input
           type="text"
           placeholder="Search Big Days"
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {bigDays.map((bigDay) => (
+        {filteredBigDay.map((bigDay) => (
           <div key={bigDay.id} className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-script text-weddingGold mb-2">
               {bigDay.name}
