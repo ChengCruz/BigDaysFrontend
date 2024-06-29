@@ -53,3 +53,35 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+
+// import React from 'react';
+// import { Link } from 'react-router-dom';
+
+// const HomePage: React.FC = () => {
+//   return (
+//     <div className="text-center">
+//       <h1 className="text-5xl font-bold text-weddingGold mb-6">Welcome to the Wedding Planner</h1>
+//       <p className="text-xl mb-6">Plan your wedding seamlessly with our tools.</p>
+//       <div className="flex justify-center space-x-4">
+//         <Link to="/bigdays" className="bg-weddingPink text-white rounded p-4 hover:bg-pink-600 transition duration-200">
+//           Manage Big Days
+//         </Link>
+//         <Link to="/guests" className="bg-weddingPink text-white rounded p-4 hover:bg-pink-600 transition duration-200">
+//           Manage Guests
+//         </Link>
+//         <Link to="/tables" className="bg-weddingPink text-white rounded p-4 hover:bg-pink-600 transition duration-200">
+//           Manage Tables
+//         </Link>
+//         <Link to="/rsvps" className="bg-weddingPink text-white rounded p-4 hover:bg-pink-600 transition duration-200">
+//           Manage RSVPs
+//         </Link>
+//         <Link to="/menus" className="bg-weddingPink text-white rounded p-4 hover:bg-pink-600 transition duration-200">
+//           Manage Menus
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default HomePage;

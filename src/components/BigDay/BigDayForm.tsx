@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { BIGDAY_URL_ADD, BIGDAY_URL_UPDATE } from "../../utils/AWSURI";
 
 interface BigDay {
   id?: string;
@@ -10,59 +9,46 @@ interface BigDay {
   date: string;
   venue: string;
 }
-interface apiResponse {
-  event_name: string;
-  date: Date;
-  venue: string;
-}
 
 const BigDayForm: React.FC<{
   initialData?: BigDay;
   onFormSubmit?: () => void;
 }> = ({ initialData, onFormSubmit }) => {
-  const [form, setForm] = useState<BigDay>(
-    initialData || { name: "", date: "", venue: "" }
-  );
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<BigDay>({
+    defaultValues: initialData || { name: "", date: "", venue: "" },
+  });
 
   useEffect(() => {
     if (initialData) {
-      setForm(initialData);
+      reset(initialData);
     }
-  }, [initialData]);
+  }, [initialData, reset]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: BigDay) => {
     try {
-      const newData: apiResponse = {
-        event_name: form.name,
-        date: new Date(form.date),
-        venue: form.venue,
-      };
       if (initialData?.id) {
-        await axios.put(`${BIGDAY_URL_UPDATE}/${initialData.id}`, newData);
-        // await axios.put(`/api/bigdays/${initialData.id}`, newData);
+        await axios.put(`/api/bigdays/${initialData.id}`, data);
         toast.success("Big Day updated successfully");
       } else {
-        await axios.post(BIGDAY_URL_ADD, newData);
-        // await axios.post("/api/bigdays", newData);
+        await axios.post("/api/bigdays", data);
         toast.success("Big Day added successfully");
       }
-      setForm({ name: "", date: "", venue: "" });
-      console.log('typeof onFormSubmit ',typeof onFormSubmit)
-      if (typeof onFormSubmit === "function") onFormSubmit(); // Call the callback to refresh the list
+      reset();
+      if (onFormSubmit) onFormSubmit();
     } catch (error) {
-      console.error("Error saving big day:", error);
+      console.error("Error saving Big Day:", error);
       toast.error("Failed to save Big Day");
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="bg-white rounded-lg shadow-lg p-6 mb-6"
     >
       {/* <h2 className="text-2xl font-script text-weddingGold mb-4">{initialData ? 'Edit Big Day' : 'Add a Big Day'}</h2> */}
@@ -75,34 +61,28 @@ const BigDayForm: React.FC<{
         <label className="block text-gray-700 font-semibold">Name</label>
         <input
           type="text"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
+          {...register("name", { required: "Name is required" })}
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
-          required
         />
+        {errors.name && <p className="text-red-600">{errors.name.message}</p>}
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 font-semibold">Date</label>
         <input
           type="date"
-          name="date"
-          value={form.date}
-          onChange={handleChange}
+          {...register("date", { required: "Date is required" })}
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
-          required
         />
+        {errors.date && <p className="text-red-600">{errors.date.message}</p>}
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 font-semibold">Venue</label>
         <input
           type="text"
-          name="venue"
-          value={form.venue}
-          onChange={handleChange}
+          {...register("venue", { required: "Venue is required" })}
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
-          required
         />
+        {errors.venue && <p className="text-red-600">{errors.venue.message}</p>}
       </div>
       <button
         type="submit"

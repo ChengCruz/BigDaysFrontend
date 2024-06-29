@@ -17,20 +17,24 @@ const BigDayPage: React.FC = () => {
   const fetchBigDays = async () => {
     try {
       const response = await axios.get(BIGDAY_URL_GET);
-      const data = JSON.parse(response.data.body);
+      const data = response.data;
+      // const data = JSON.parse(response.data.body);
+      console.log(data);
+      // const transformedData = data
+      //   .map((item: any) => ({
+      //     id: item.eventId,
+      //     name: item.EventName,
+      //     date: item.Date,
+      //     venue: item.Venue,
+      //   }))
+      //   .sort(
+      //     (a: BigDay, b: BigDay) =>
+      //       new Date(b.date).getTime() - new Date(a.date).getTime()
+      //   );
 
-      const transformedData = data
-        .map((item: any) => ({
-          id: item.eventId,
-          name: item.EventName,
-          date: item.Date,
-          venue: item.Venue,
-        }))
-        .sort(
-          (a: BigDay, b: BigDay) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
-
+      const transformedData = data.sort(
+        (a: BigDay, b: BigDay) => parseInt(b.id) - parseInt(a.id)
+      );
       setBigDays(transformedData);
     } catch (error) {
       console.error("Error fetching big days:", error);

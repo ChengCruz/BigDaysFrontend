@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-script {
+  font-family: 'Dancing Script', cursive;
+}
+
+/* .bg-weddingPink {
+  background-color: #ff69b4;
+}
+
+.text-weddingGold {
+  color: #ffd700;
+}
+
+.bg-weddingGold {
+  background-color: #ffd700;
+} */
+
+.hover\:bg-weddingGold-dark:hover {
+  background-color: #e6be8a;
+}

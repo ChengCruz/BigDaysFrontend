@@ -1,57 +1,31 @@
-.layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  .header {
-    background-color: #333;
-    padding: 1rem 0;
-  }
-  
-  .container {
-    width: 90%;
-    margin: 0 auto;
-  }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .nav-brand {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.5rem;
-  }
-  
-  .nav-list {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s;
-  }
-  
-  .nav-link:hover {
-    color: #ddd;
-  }
-  
-  .main-content {
-    flex: 1;
-    padding: 2rem 0;
-  }
-  
-  .footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
-  }
-  
+.transition-width {
+  transition: width 0.2s;
+}
+
+.transition-margin {
+  transition: margin-left 0.2s;
+}
+
+.transition-all {
+  transition: all 0.2s;
+}
+
+.bg-weddingPink {
+  background-color: #ff69b4;
+}
+
+.text-weddingGold {
+  color: #ffd700;
+}
+
+/* .bg-weddingGold {
+  background-color: #ffd700;
+}
+
+.bg-weddingWhite {
+  background-color: #fffafa;
+}
+
+.hover\:bg-weddingGold-dark:hover {
+  background-color: #e6be8a;
+} */

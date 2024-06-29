@@ -39,6 +39,15 @@ const MenuList: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`/api/menus/${id}`);
+      setMenus(menus.filter(m => m.id !== id));
+    } catch (error) {
+      console.error('Error deleting menu:', error);
+    }
+  };
+
   return (
     <div>
       <div className="mb-4">
@@ -55,12 +64,20 @@ const MenuList: React.FC = () => {
           <div key={menu.id} className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-script text-weddingGold mb-2">{menu.name}</h2>
             <p className="text-gray-700 mb-1"><strong>Description:</strong> {menu.description}</p>
-            <button
-              onClick={() => openModal(menu)}
-              className="mt-4 bg-weddingPink text-white rounded p-2 hover:bg-pink-600 transition duration-200"
-            >
-              Edit
-            </button>
+            <div className="flex space-x-2 mt-4">
+              <button
+                onClick={() => openModal(menu)}
+                className="bg-weddingPink text-white rounded p-2 hover:bg-pink-600 transition duration-200"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(menu.id)}
+                className="bg-red-600 text-white rounded p-2 hover:bg-red-800 transition duration-200"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

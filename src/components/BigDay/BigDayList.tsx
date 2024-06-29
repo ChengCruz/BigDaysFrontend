@@ -1,6 +1,8 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import CustomModal from "../CustomModal";
 import BigDayForm from "./BigDayForm";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 interface BigDay {
   id: string;
@@ -59,6 +61,17 @@ const BigDayList: React.FC<BigDayListProps> = ({ bigDays, fetchBigDays }) => {
   //   fetchBigDays();
   // }, []);
 
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`/api/bigdays/${id}`);
+      toast.success("Big Day deleted successfully");
+      fetchBigDays(); // Refresh the list after deletion
+    } catch (error) {
+      console.error("Error deleting Big Day:", error);
+      toast.error("Failed to delete Big Day");
+    }
+  };
+
   const openModal = (bigDay: BigDay) => {
     setSelectedBigDay(bigDay);
     setIsModalOpen(true);
@@ -90,12 +103,20 @@ const BigDayList: React.FC<BigDayListProps> = ({ bigDays, fetchBigDays }) => {
             <p className="text-gray-700">
               <strong>Venue:</strong> {bigDay.venue}
             </p>
-            <button
-              onClick={() => openModal(bigDay)}
-              className="mt-4 bg-weddingPink text-white rounded p-2 hover:bg-pink-600 transition duration-200"
-            >
-              Edit
-            </button>
+            <div className="flex space-x-2 mt-4">
+              <button
+                onClick={() => openModal(bigDay)}
+                className="bg-weddingPink text-white rounded p-2 hover:bg-pink-600 transition duration-200"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(bigDay.id)}
+                className="bg-red-600 text-white rounded p-2 hover:bg-red-800 transition duration-200"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
