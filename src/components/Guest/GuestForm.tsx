@@ -7,7 +7,7 @@ import { Guest } from '../types/Guest';
 
 const GuestForm: React.FC<{ initialData?: Guest; onSave?: () => void }> = ({ initialData, onSave }) => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Guest>({
-    defaultValues: initialData || { firstName: '', lastName: '', email: '' },
+    defaultValues: initialData || { firstName: '', lastName: '', email: '', status: 'Family Member' },
   });
 
   useEffect(() => {
@@ -61,6 +61,19 @@ const GuestForm: React.FC<{ initialData?: Guest; onSave?: () => void }> = ({ ini
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
         />
         {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-semibold">Status</label>
+        <select
+          {...register('status', { required: 'Status is required' })}
+          className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
+        >
+          <option value="Family Member">Family Member</option>
+          <option value="Friend">Friend</option>
+          <option value="VIP">VIP</option>
+          <option value="Other">Other</option>
+        </select>
+        {errors.status && <p className="text-red-600">{errors.status.message}</p>}
       </div>
       <button type="submit" className="bg-weddingGold text-white rounded p-2 hover:bg-weddingGold-dark transition duration-200">
         {initialData ? 'Update' : 'Add'} Guest

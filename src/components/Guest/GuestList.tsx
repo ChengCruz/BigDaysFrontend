@@ -40,7 +40,7 @@ const GuestList: React.FC<GuestListProps> = ({ guests, loading, error, fetchGues
     setIsModalOpen(false);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await axios.delete(`/api/guests/${id}`);
       fetchGuests(); // Refresh the list after deletion
@@ -74,6 +74,9 @@ const GuestList: React.FC<GuestListProps> = ({ guests, loading, error, fetchGues
             <p className="text-gray-700 mb-1">
               <strong>Email:</strong> {guest.email}
             </p>
+            <p className="text-gray-700 mb-1">
+              <strong>Status:</strong> {guest.status}
+            </p>
             <div className="flex space-x-2 mt-4">
               <button
                 onClick={() => openModal(guest)}
@@ -82,7 +85,7 @@ const GuestList: React.FC<GuestListProps> = ({ guests, loading, error, fetchGues
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(guest.id)}
+                onClick={() => handleDelete(guest.id!)}
                 className="bg-red-600 text-white rounded p-2 hover:bg-red-800 transition duration-200"
               >
                 Delete
