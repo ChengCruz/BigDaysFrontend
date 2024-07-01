@@ -1,30 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import CustomModal from '../CustomModal';
 import RSVPForm from './RSVPForm';
+import { RSVP } from '../types';
 
-interface RSVP {
-  id: number;
-  guestName: string;
-  status: string;
-}
-
-const RSVPList: React.FC = () => {
-  const [rsvps, setRSVPs] = useState<RSVP[]>([]);
-  const [selectedRSVP, setSelectedRSVP] = useState<RSVP | null>(null);
+const RSVPList: React.FC<{ rsvps: RSVP[]; onEdit: (rsvp: RSVP) => void }> = ({ rsvps, onEdit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    async function fetchRSVPs() {
-      try {
-        const response = await axios.get<RSVP[]>('/api/rsvps');
-        setRSVPs(response.data);
-      } catch (error) {
-        console.error('Error fetching RSVPs:', error);
-      }
-    }
-    fetchRSVPs();
-  }, []);
+  const [selectedRSVP, setSelectedRSVP] = useState<RSVP | null>(null);
 
   const openModal = (rsvp: RSVP) => {
     setSelectedRSVP(rsvp);
@@ -50,6 +31,9 @@ const RSVPList: React.FC = () => {
           <div key={rsvp.id} className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-script text-weddingGold mb-2">{rsvp.guestName}</h2>
             <p className="text-gray-700 mb-1"><strong>Status:</strong> {rsvp.status}</p>
+            {rsvp.guestType && (
+              <p className="text-gray-700 mb-1"><strong>Type:</strong> {rsvp.guestType}</p>
+            )}
             <button
               onClick={() => openModal(rsvp)}
               className="mt-4 bg-weddingPink text-white rounded p-2 hover:bg-pink-600 transition duration-200"
@@ -61,7 +45,10 @@ const RSVPList: React.FC = () => {
       </div>
       {selectedRSVP && (
         <CustomModal isOpen={isModalOpen} onClose={closeModal} title="Edit RSVP">
-          <RSVPForm initialData={selectedRSVP} />
+          <RSVPForm initialData={selectedRSVP} onSave={(updatedRSVP) => {
+            onEdit(updatedRSVP);
+            closeModal();
+          }} />
         </CustomModal>
       )}
     </div>

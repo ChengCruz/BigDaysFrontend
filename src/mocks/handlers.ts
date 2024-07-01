@@ -111,12 +111,52 @@ export const handlers = [
       tables.splice(index, 1);
       return new HttpResponse(null, { status: 204 });
     }
-    return new HttpResponse('Guest not found', { status: 404 });
+    return new HttpResponse('Table not found', { status: 404 });
   }),
 
   // RSVPs Handlers
   http.get("/api/rsvps", () => {
     return HttpResponse.json(rsvps, { status: 200 });
+  }),
+  http.post('/api/rsvps', async({request}) => {
+    const data: any = await request.json();
+    const { guestName, status, guestType,eventHashKey } =data;
+  
+    const newRsvp = { id: Date.now().toString(), guestName, status, guestType,eventHashKey }
+    rsvps.push(newRsvp);
+    return HttpResponse.json(newRsvp, { status: 201 });
+  }),
+  http.put("/api/rsvps/:id", async ({ request, params }) => {
+    const data: any = await request.json();
+    const { id } = params;
+    const index = rsvps.findIndex((b) => b.id === id);
+    if (index !== -1) {
+      rsvps[index] = { ...data, id: id };
+      return HttpResponse.json(rsvps[index], { status: 200 });
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+  http.delete('/api/rsvps/:id', async({ params }) => {
+    const { id } = params;
+    const index = rsvps.findIndex(b => b.id === (id));
+    if (index !== -1) {
+      rsvps.splice(index, 1);
+      return new HttpResponse(null, { status: 204 });
+    }
+    return new HttpResponse('RSVP not found', { status: 404 });
+  }),
+
+  //Public RSVP Handler
+  http.get('/api/event-hash-key', () => {
+    return HttpResponse.json('Q6U$bT^AXmMxY2Z;L5-H?~', { status: 200 });
+  }),
+  http.post('/api/public-rsvps', async({request}) => {
+    const data: any = await request.json();
+    const { guestName, status, guestType,eventHashKey } =data;
+  
+    const newRsvp = { id: Date.now().toString(), guestName, status, guestType,eventHashKey }
+    rsvps.push(newRsvp);
+    return HttpResponse.json(newRsvp, { status: 201 });
   }),
   // Menus Handlers
   http.get("/api/menus", () => {

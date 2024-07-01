@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { RSVP } from '../types';
 
-interface RSVP {
-  id?: number;
-  guestName: string;
-  status: string;
-}
-
-const RSVPForm: React.FC<{ initialData?: RSVP }> = ({ initialData }) => {
-  const [form, setForm] = useState<RSVP>(initialData || { guestName: '', status: '' });
+const RSVPForm: React.FC<{ initialData: RSVP | null; onSave: (rsvp: RSVP) => void }> = ({ initialData, onSave }) => {
+  const [form, setForm] = useState<RSVP>(initialData || { guestName: '', status: '', guestType: '' });
 
   useEffect(() => {
     if (initialData) {
@@ -22,21 +14,10 @@ const RSVPForm: React.FC<{ initialData?: RSVP }> = ({ initialData }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      if (initialData?.id) {
-        await axios.put(`/api/rsvps/${initialData.id}`, form);
-        toast.success('RSVP updated successfully');
-      } else {
-        await axios.post('/api/rsvps', form);
-        toast.success('RSVP added successfully');
-      }
-      setForm({ guestName: '', status: '' });
-    } catch (error) {
-      console.error('Error saving RSVP:', error);
-      toast.error('Failed to save RSVP');
-    }
+    onSave(form);
+    setForm({ guestName: '', status: '', guestType: '' });
   };
 
   return (
@@ -65,6 +46,20 @@ const RSVPForm: React.FC<{ initialData?: RSVP }> = ({ initialData }) => {
           <option value="Confirmed">Confirmed</option>
           <option value="Pending">Pending</option>
           <option value="Declined">Declined</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 font-semibold">Guest Type</label>
+        <select
+          name="guestType"
+          value={form.guestType}
+          onChange={handleChange}
+          className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
+        >
+          <option value="" disabled>Select type</option>
+          <option value="Family">Family</option>
+          <option value="Friend">Friend</option>
+          <option value="VIP">VIP</option>
         </select>
       </div>
       <button type="submit" className="bg-weddingGold text-white rounded p-2 hover:bg-weddingGold-dark transition duration-200">
