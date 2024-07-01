@@ -10,6 +10,7 @@ import MenuPage from "./pages/MenuPage";
 import DashboardPage from "./pages/DashboardPage";
 import "./styles/App.css";
 import PublicRSVPForm from "./components/RSVP/PublicRSVPForm";
+import CustomRSVPForm from "./components/RSVP/CustomRSVPForm";
 
 const NoMatch: React.FC = () => {
   return (
@@ -33,9 +34,10 @@ const App: React.FC = () => {
         <Route path="tables" element={<TablePage />} />
         <Route path="rsvps" element={<RSVPPage />} />
         <Route path="menus" element={<MenuPage />} />
-        <Route path="/public-rsvp/:hashKey" element={<PublicRSVPForm />} />
+        {/* <Route path="/public-rsvp/:hashKey" element={<PublicRSVPForm />} /> */}
         <Route path="*" element={<NoMatch />} />
       </Route>
+      <Route path="/public-rsvp/:hashKey" element={<CustomRSVPForm />} />
     </Routes>
   );
 };
