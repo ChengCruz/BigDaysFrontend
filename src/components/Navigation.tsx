@@ -14,6 +14,7 @@ const Navigation: React.FC = () => {
       <li><Link to="/tables" className="text-lg hover:text-weddingPink">Tables</Link></li>
       <li><Link to="/rsvps" className="text-lg hover:text-weddingPink">RSVPs</Link></li>
       <li><Link to="/menus" className="text-lg hover:text-weddingPink">Menus</Link></li>
+      {/* <li><Link to="/organizer-dashboard" className="text-lg hover:text-weddingPink">DashBoard</Link></li> */}
     </ul>
   </nav>
   );

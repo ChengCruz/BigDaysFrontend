@@ -1,59 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { RSVP } from '../types';
 
-const RSVPForm: React.FC<{ initialData: RSVP | null; onSave: (rsvp: RSVP) => void }> = ({ initialData, onSave }) => {
-  const [form, setForm] = useState<RSVP>(initialData || { guestName: '', status: '', guestType: '' });
+interface Props {
+  initialData?: RSVP;
+  onSave: (rsvp: RSVP) => void;
+}
+
+const RSVPForm: React.FC<Props> = ({ initialData, onSave }) => {
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<RSVP>({
+    defaultValues: initialData || { guestName: '', status: '', guestType: '' },
+  });
 
   useEffect(() => {
     if (initialData) {
-      setForm(initialData);
+      reset(initialData);
     }
-  }, [initialData]);
+  }, [initialData, reset]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(form);
-    setForm({ guestName: '', status: '', guestType: '' });
+  const onSubmit = (data: RSVP) => {
+    onSave(data);
+    reset();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-lg p-6 mb-6">
       <div className="mb-4">
         <label className="block text-gray-700 font-semibold">Guest Name</label>
         <input
           type="text"
-          name="guestName"
-          value={form.guestName}
-          onChange={handleChange}
+          {...register('guestName', { required: 'Guest name is required' })}
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
-          required
         />
+        {errors.guestName && <p className="text-red-600">{errors.guestName.message}</p>}
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 font-semibold">Status</label>
         <select
-          name="status"
-          value={form.status}
-          onChange={handleChange}
+          {...register('status', { required: 'Status is required' })}
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
-          required
         >
           <option value="" disabled>Select status</option>
           <option value="Confirmed">Confirmed</option>
           <option value="Pending">Pending</option>
           <option value="Declined">Declined</option>
         </select>
+        {errors.status && <p className="text-red-600">{errors.status.message}</p>}
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 font-semibold">Guest Type</label>
         <select
-          name="guestType"
-          value={form.guestType}
-          onChange={handleChange}
+          {...register('guestType')}
           className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-weddingGold"
         >
           <option value="" disabled>Select type</option>

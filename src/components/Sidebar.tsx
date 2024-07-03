@@ -30,6 +30,9 @@ const Sidebar: React.FC<{ isOpen: boolean; toggleSidebar: () => void }> = ({ isO
         <li className="mb-4">
           <Link to="/menus" className="text-xl hover:text-weddingGold">Menus</Link>
         </li>
+        <li>
+          <Link to="/organizer-dashboard" className="text-xl hover:text-weddingGold">DashBoard</Link>
+        </li>
       </ul>
     </div>
   );

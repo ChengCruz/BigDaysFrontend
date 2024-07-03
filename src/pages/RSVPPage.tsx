@@ -4,13 +4,7 @@ import RSVPList from '../components/RSVP/RSVPList';
 import RSVPForm from '../components/RSVP/RSVPForm';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface RSVP {
-  id?: string;
-  guestName: string;
-  status: string;
-  guestType?: string;
-}
+import { RSVP } from '../components/types';
 
 const RSVPPage: React.FC = () => {
   const [rsvps, setRSVPs] = useState<RSVP[]>([]);
@@ -75,7 +69,7 @@ const RSVPPage: React.FC = () => {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-4xl font-script text-weddingGold text-center mb-6">RSVPs</h1>
-      <RSVPForm initialData={selectedRSVP} onSave={addOrUpdateRSVP} />
+      <RSVPForm initialData={selectedRSVP!} onSave={addOrUpdateRSVP} />
       <RSVPList rsvps={rsvps} onEdit={handleSelectRSVP} />
       {eventHashKey && (
         <div className="text-center mt-6">

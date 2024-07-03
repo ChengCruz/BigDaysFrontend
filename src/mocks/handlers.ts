@@ -177,9 +177,10 @@ export const handlers = [
     const validHashKeys = ["Q6U$bT^AXmMxY2Z;L5-H^~"];
     const { hashKey } = params;
     const decodedHashKey = decodeURIComponent(hashKey.toString());
-    // console.log('validHashKeys ',validHashKeys.includes(hashKey.toString()))
-    // console.log('validate ',hashKey)
-    // console.log('decodedHashKey ',decodedHashKey)
+    console.log('validHashKeys ',validHashKeys.includes(hashKey.toString()))
+    console.log('validate ',validHashKeys[0])
+    console.log('decodedHashKey ',decodedHashKey)
+    console.log('hashKey ',hashKey)
 
     if (validHashKeys.includes(decodedHashKey)) {
       return HttpResponse.json({ valid: true });
